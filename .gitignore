@@ -1,0 +1,7 @@
+__pycache__
+
+# exclude everything
+projects/*
+
+# exception to the rule
+!projects/.gitkeep 
