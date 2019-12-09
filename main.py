@@ -1,19 +1,39 @@
 import tkinter as tk
-from tkinter import filedialog, Text
+from tkinter import filedialog, simpledialog
 import os
 import sys
 
 ## setup
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
+appDir = os.path.dirname(os.path.realpath(__file__))
+os.chdir(appDir)
 sys.path.insert(1, os.getcwd())
 
 ## internal imports
 from appui import App
 
+## app setup
+
+app = App()
+app.setup()
+        
+root = app.master
+
 ## helper functions
 
-def openProject():
-    print('openProject')
+def newProject():
+    projectTitle = simpledialog.askstring("Input", "Project name:", parent=root)
+    if projectTitle != '':
+        changeProjectTitle(projectTitle, projectLbl)
+
+def openProject(projectLbl):
+    filename = filedialog.askopenfilename(initialdir=os.path.join(appDir, 'projects'), title="Select File", filetypes=(("excel", "*.xlsx"), ("all files", "*.*")))
+    if filename != '':
+        changeProjectTitle(filename, projectLbl)
+
+def changeProjectTitle(title, projectLbl):
+    projectLbl.destroy()
+    projectLbl = tk.Label(projectTitleFrm, text=title, fg="black", bg="red")
+    projectLbl.pack()
 
 def startTask():
     print('startTask')
@@ -23,10 +43,13 @@ def endTask():
 
 ## main execution
 
-app = App()
-app.setup()
-        
-root = app.master
+projectTitle = 'NO PROJECT SELECTED'
+
+projectTitleFrm = tk.Frame(root, bg="gray")
+projectTitleFrm.place(relwidth=0.8, relheight=0.1, relx=0.2, rely=0.0)
+
+projectLbl = tk.Label(projectTitleFrm, text=projectTitle, fg="black", bg="red")
+projectLbl.pack()
 
 tasksframe = tk.Frame(root, bg="white")
 tasksframe.place(relwidth=0.8, relheight=0.7, relx=0.2, rely=0.1)
@@ -34,7 +57,10 @@ tasksframe.place(relwidth=0.8, relheight=0.7, relx=0.2, rely=0.1)
 buttonPanel = tk.Frame(root, bg="green")
 buttonPanel.place(relwidth=0.2, relheight=1.0, relx=0.0, rely=0.0)
 
-openProjectBtn = tk.Button(buttonPanel, text="Open Project", padx=10, pady=5, fg="black", bg="blue", command=openProject)
+newProjectBtn = tk.Button(buttonPanel, text="New Project", padx=10, pady=5, fg="black", bg="blue", command=lambda: newProject())
+newProjectBtn.pack()
+
+openProjectBtn = tk.Button(buttonPanel, text="Open Project", padx=10, pady=5, fg="black", bg="blue", command=lambda: openProject(projectLbl))
 openProjectBtn.pack()
 
 taskButtonSection = tk.Frame(buttonPanel, bg="red")
