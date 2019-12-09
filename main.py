@@ -1,22 +1,31 @@
+## external imports
+
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 import os
 import sys
 
 ## setup
+
 appDir = os.path.dirname(os.path.realpath(__file__))
+projectsDir = os.path.join(appDir, "projects")
+
 os.chdir(appDir)
 sys.path.insert(1, os.getcwd())
 
 ## internal imports
+
 from appui import App
+from excel import ExcelHandler
 
 ## app setup
 
 app = App()
 app.setup()
-        
+
 root = app.master
+
+handler = ExcelHandler()
 
 ## helper functions
 
@@ -24,11 +33,14 @@ def newProject():
     projectTitle = simpledialog.askstring("Input", "Project name:", parent=root)
     if projectTitle != '':
         changeProjectTitle(projectTitle, projectLbl)
+        path = os.path.join(projectsDir, projectTitle + ".xlsx")
+        handler.newWorkbook(path)
 
 def openProject(projectLbl):
     filename = filedialog.askopenfilename(initialdir=os.path.join(appDir, 'projects'), title="Select File", filetypes=(("excel", "*.xlsx"), ("all files", "*.*")))
     if filename != '':
         changeProjectTitle(filename, projectLbl)
+        handler.openWorkbook(filename)
 
 def changeProjectTitle(title, projectLbl):
     projectLbl.destroy()
@@ -37,6 +49,7 @@ def changeProjectTitle(title, projectLbl):
 
 def startTask():
     print('startTask')
+    print(handler.getNextRow())
 
 def endTask():
     print('endTask')
@@ -73,3 +86,5 @@ endTaskBtn = tk.Button(taskButtonSection, text="End", padx=10, pady=5, fg="white
 endTaskBtn.pack()
 
 root.mainloop()
+
+handler.close()

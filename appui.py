@@ -7,6 +7,7 @@ class App(tk.Frame):
 
     def setup(self):
         root = self.master
+        
         # prevent window resizing
         root.resizable(False, False)
 
