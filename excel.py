@@ -26,6 +26,9 @@ class ExcelHandler():
         self.workbook = openpyxl.load_workbook(filename = path)
         self.filepath = path
 
+    def saveWorkbook(self):
+        self.workbook.save(self.filepath)
+
     def close(self):
         self.workbook.close()
 
@@ -60,17 +63,29 @@ class ExcelHandler():
 
     ## helper methods
 
-    def getNextRow(self):
+    def getNextEmptyCellDown(self, column="A"):
         sheet = self.workbook.active
         nextRow = 1
-        for cell in sheet["A"]:
+        for cell in sheet[column]:
             if cell.value is None:
-                # print("None:", cell.row)
                 nextRow = cell.row
                 break
             else:
-                # print("Value:", str(cell.row))
                 nextRow = cell.row + 1
-        return nextRow
+        return sheet[column + str(nextRow)]
 
-    
+    def getCellAbove(self, cell):
+        if cell.row - 1 > 0:
+            return cell.offset(row = -1)
+        else:
+            return None
+
+    def getCellBeside(self, cell, rightside=True):
+        if rightside:
+            return cell.offset(column = 1)
+        else:
+            if cell.column - 1 > 0:
+                return cell.offset(column = -1)
+            else:
+                return None
+        
