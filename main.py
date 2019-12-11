@@ -22,20 +22,21 @@ from excel import ExcelHandler
 ## app setup
 
 app = App()
-
-root = app.master
-
 handler = ExcelHandler()
 
 ## helper functions
 
 def newProject():
-    projectTitle = simpledialog.askstring("Input", "Project name:", parent=root)
+    projectTitle = simpledialog.askstring("Input", "Project name:", parent=app.master)
     if projectTitle != '':
         app.changeProjectTitle(projectTitle)
         path = os.path.join(projectsDir, projectTitle + ".xlsx")
         handler.newWorkbook(path)
         handler.inputScaffold()
+        handler.adjustColumn("B", 20)
+        handler.adjustColumn("C", 20)
+        handler.adjustColumn("D", 40)
+        handler.saveWorkbook()
 
 def openProject():
     filename = filedialog.askopenfilename(initialdir=os.path.join(appDir, 'projects'), title="Select File", filetypes=(("excel", "*.xlsx"), ("all files", "*.*")))
@@ -53,24 +54,28 @@ def startTask():
     cell = handler.getCellBeside(cell)
     cell.value = datetime.datetime.now()
     cell = handler.getCellBeside(cell)
-    cell.value = 'START'
     cell = handler.getCellBeside(cell)
     cell.value = app.taskEntry.get("1.0", tk.END)
     handler.saveWorkbook()
 
 def endTask():
-    cell = handler.getNextEmptyCellDown()
+    cell = handler.getLastFillCellDown()
     previousCell = handler.getCellAbove(cell)
     if type(previousCell.value) is int:
         cell.value = int(previousCell.value) + 1
     else:
         cell.value = 1
     cell = handler.getCellBeside(cell)
+    cell = handler.getCellBeside(cell)
     cell.value = datetime.datetime.now()
     cell = handler.getCellBeside(cell)
-    cell.value = 'END'
-    cell = handler.getCellBeside(cell)
     cell.value = app.taskEntry.get("1.0", tk.END)
+    # handler.adjustCell(cell, verticalAlignment="center")
+    cell = handler.getCellBeside(cell)
+    cellRow = str(cell.row)
+    cell.value = datetime.time()
+    cell.value = f"=C{cellRow}-B{cellRow}"
+    handler.adjustRow(cell.row, 20)
     handler.saveWorkbook()
 
 ## main execution
