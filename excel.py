@@ -39,20 +39,17 @@ class ExcelHandler():
     def inputText(self, text, cell):
         sheet = self.workbook.active
         sheet[cell] = text
-        self.workbook.save(self.filepath)
 
     def inputNumber(self, stringNumber, cell):
         sheet = self.workbook.active
         sheet[cell].value = int(stringNumber.replace('.', ''))
-        self.workbook.save(self.filepath)
 
-    def inputDatetime(self, date_time, cell):
+    def inputDate(self, date, cellCoordinate):
         sheet = self.workbook.active
-        sheet[cell].value = datetime.datetime.strptime(date_time, "%d/%m/%Y")
-        self.workbook.save(self.filepath)
+        sheet[cellCoordinate].value = date
 
-    def inputCurrentDatetime(self, cell):
-        self.inputDatetime(datetime.datetime.now(), cell)
+    def inputCurrentDate(self, cell):
+        self.inputDate(datetime.datetime.now(), cell)
 
     def inputScaffold(self):
         sheet = self.workbook.active
@@ -61,7 +58,6 @@ class ExcelHandler():
         sheet['C1'] = 'End'
         sheet['D1'] = 'Task'
         sheet['E1'] = 'Interval'
-        self.workbook.save(self.filepath)
 
     ## helper methods
 
@@ -116,4 +112,12 @@ class ExcelHandler():
     # def adjustCell(self, cell, horizontalAlignment=None, verticalAlignment=None):
     #     if horizontalAlignment != None or verticalAlignment != None:
     #         cell.alignment = Alignment(horizontal=horizontalAlignment, vertical=horizontalAlignment)
+
+    def insertRow(self, atRow):
+        sheet = self.workbook.active
+        sheet.insert_rows(atRow)
+    
+    def mergeCells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
+        sheet = self.workbook.active
+        sheet.merge_cells(range_string=range_string, start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
         
