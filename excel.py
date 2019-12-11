@@ -77,7 +77,7 @@ class ExcelHandler():
         nextRow = 1
         for cell in sheet[column]:
             if cell.value is None:
-                nextRow = cell.row
+                nextRow = cell.row - 1
                 break
             else:
                 nextRow = cell.row
@@ -89,8 +89,8 @@ class ExcelHandler():
         else:
             return None
 
-    def getCellBellow(self, cell):
-        return cell.offset(column = 1)
+    def getCellBelow(self, cell):
+        return cell.offset(row = 1)
 
     def getCellBeside(self, cell, rightside=True):
         if rightside:

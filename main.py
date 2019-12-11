@@ -18,6 +18,7 @@ sys.path.insert(1, os.getcwd())
 
 from appui import App
 from excel import ExcelHandler
+from task import Task
 
 ## app setup
 
@@ -43,6 +44,7 @@ def openProject():
     if filename != '':
         app.changeProjectTitle(filename)
         handler.openWorkbook(filename)
+        app.presentTasks(loadTasks())
 
 def startTask():
     if handler.filepath == '':
@@ -103,6 +105,30 @@ def inputDivisoryDate(row):
     mergeRange = f'A{str(row)}:E{str(row)}'
     handler.mergeCells(range_string=mergeRange)
     handler.inputDate(datetime.datetime.now().date(), f'A{str(row)}')
+
+def loadTasks():
+    tasks = []
+    cell = handler.getLastFillCellDown()
+    if cell.row < 2:
+        return
+    while type(cell.value) is int:
+        cell = handler.getCellAbove(cell)
+    cell = handler.getCellBelow(cell)
+    while cell.value != None:
+        print(cell.coordinate, cell.value)
+        taskCell = cell
+        taskId = taskCell.value
+        taskCell = handler.getCellBeside(taskCell)
+        taskStart = taskCell.value
+        taskCell = handler.getCellBeside(taskCell)
+        taskEnd = taskCell.value
+        taskCell = handler.getCellBeside(taskCell)
+        taskDesc = taskCell.value
+        task = Task(taskId, start=taskStart, end=taskEnd, description=taskDesc)
+        tasks.append(task)
+        cell = handler.getCellBelow(cell)
+    return tasks
+
 
 ## main execution
 

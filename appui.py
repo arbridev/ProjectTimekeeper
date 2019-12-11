@@ -1,10 +1,12 @@
 import tkinter as tk
+from task import Task
 
 class App(tk.Frame):
 
     projectTitleFrm = None
     projectLbl = None
     tasksframe = None
+    tasksList = None
     buttonPanel = None
     newProjectBtn = None
     openProjectBtn = None
@@ -53,6 +55,9 @@ class App(tk.Frame):
 
         self.tasksframe = tk.Frame(root, bg="white")
         self.tasksframe.place(relwidth=0.76, relheight=0.7, relx=0.22, rely=0.1)
+
+        self.tasksList = tk.Listbox(self.tasksframe)
+        self.tasksList.pack(expand=True, fill=tk.BOTH)
 
         self.buttonPanel = tk.Frame(root, bg="gray")
         self.buttonPanel.place(relwidth=0.2, relheight=1.0, relx=0.0, rely=0.0)
@@ -108,5 +113,10 @@ class App(tk.Frame):
             self.endTaskBtn.destroy()
         self.endTaskBtn = tk.Button(self.taskButtonSection, text="End", padx=10, pady=5, fg="white", bg="#263D42", command=endTask)
         self.endTaskBtn.pack(fill=tk.X)
+
+    def presentTasks(self, tasks):
+        for task in tasks:
+            print(task)
+            
 
     
