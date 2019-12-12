@@ -1,4 +1,5 @@
 import tkinter as tk
+import datetime
 from task import Task
 
 class App(tk.Frame):
@@ -14,6 +15,8 @@ class App(tk.Frame):
     taskPanel = None
     startTaskBtn = None
     endTaskBtn = None
+
+    __lightGray = "#AAAAAA"
 
     def __init__(self, master=None):
         super().__init__(master)
@@ -32,7 +35,7 @@ class App(tk.Frame):
         wWidth = sWidth/2
         wHeight = sHeight/2
 
-        canvas = tk.Canvas(root, height=wHeight, width=wWidth, bg="gray")
+        canvas = tk.Canvas(root, height=wHeight, width=wWidth, bg=self.__lightGray)
         canvas.pack()
 
         # calculate x and y coordinates for the Tk root window
@@ -47,7 +50,7 @@ class App(tk.Frame):
 
         projectTitle = 'NO PROJECT SELECTED'
 
-        self.projectTitleFrm = tk.Frame(root, bg="gray")
+        self.projectTitleFrm = tk.Frame(root, bg=self.__lightGray)
         self.projectTitleFrm.place(relwidth=0.8, relheight=0.1, relx=0.2, rely=0.0)
 
         self.projectLbl = tk.Label(self.projectTitleFrm, text=projectTitle, fg="black", bg="red")
@@ -59,19 +62,19 @@ class App(tk.Frame):
         self.taskList = tk.Listbox(self.tasksframe)
         self.taskList.pack(expand=True, fill=tk.BOTH)
 
-        self.buttonPanel = tk.Frame(root, bg="gray")
+        self.buttonPanel = tk.Frame(root, bg=self.__lightGray)
         self.buttonPanel.place(relwidth=0.2, relheight=1.0, relx=0.0, rely=0.0)
         
         self.setNewProjectBtn(None)
         
         self.setOpenProjectBtn(None)
 
-        self.taskButtonSection = tk.Frame(self.buttonPanel, bg="gray")
+        self.taskButtonSection = tk.Frame(self.buttonPanel, bg=self.__lightGray)
         self.taskButtonSection.place(relwidth=1.0, relheight=0.2, relx=0.0, rely=0.8)
 
-        self.taskPanel = tk.Frame(root, bg="gray", padx=10, pady=5)
+        self.taskPanel = tk.Frame(root, bg=self.__lightGray, padx=10, pady=5)
         self.taskPanel.place(relwidth=0.8, relheight=0.2, relx=0.2, rely=0.8)
-        tk.Label(self.taskPanel, text="Task:").pack()
+        tk.Label(self.taskPanel, text="TASK DESCRIPTION:", bg=self.__lightGray).pack()
         self.taskEntry = tk.Text(self.taskPanel)
         self.taskEntry.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.BOTH)
         
@@ -93,25 +96,31 @@ class App(tk.Frame):
     def setNewProjectBtn(self, newProject):
         if newProject != None:
             self.newProjectBtn.destroy()
-        self.newProjectBtn = tk.Button(self.buttonPanel, text="New Project", padx=10, pady=5, fg="black", bg="blue", command=newProject)
+        self.newProjectBtn = tk.Button(self.buttonPanel, text="New Project", padx=10, pady=5, fg="white", bg="blue", command=newProject)
         self.newProjectBtn.pack(fill=tk.X)
 
     def setOpenProjectBtn(self, openProject):
         if openProject != None:
             self.openProjectBtn.destroy()
-        self.openProjectBtn = tk.Button(self.buttonPanel, text="Open Project", padx=10, pady=5, fg="black", bg="blue", command=openProject)
+        self.openProjectBtn = tk.Button(self.buttonPanel, text="Open Project", padx=10, pady=5, fg="white", bg="blue", command=openProject)
         self.openProjectBtn.pack(fill=tk.X)
 
-    def setStartTaskBtn(self, startTask):
+    def setStartTaskBtn(self, startTask, disabled=False):
         if startTask != None:
             self.startTaskBtn.destroy()
-        self.startTaskBtn = tk.Button(self.taskButtonSection, text="Start", padx=10, pady=5, fg="white", bg="#263D42", command=startTask)
+        state = tk.NORMAL
+        if disabled == True:
+            state = tk.DISABLED
+        self.startTaskBtn = tk.Button(self.taskButtonSection, text="Start", padx=10, pady=5, fg="white", bg="#263D42", command=startTask, state=state)
         self.startTaskBtn.pack(fill=tk.X)
 
-    def setEndTaskBtn(self, endTask):
+    def setEndTaskBtn(self, endTask, disabled=False):
         if endTask != None:
             self.endTaskBtn.destroy()
-        self.endTaskBtn = tk.Button(self.taskButtonSection, text="End", padx=10, pady=5, fg="white", bg="#263D42", command=endTask)
+        state = tk.NORMAL
+        if disabled == True:
+            state = tk.DISABLED
+        self.endTaskBtn = tk.Button(self.taskButtonSection, text="End", padx=10, pady=5, fg="white", bg="#263D42", command=endTask, state=state)
         self.endTaskBtn.pack(fill=tk.X)
 
     def presentTasks(self, tasks):
@@ -121,18 +130,29 @@ class App(tk.Frame):
             print(task)
             text = f'{task.id} - Start: '
             if task.start != None:
-                text += f'{str(task.start.time())}'
+                text += f'{task.start.strftime("%H:%M:%S")}'
             text += ' | End: '
             if task.end != None:
-                text += f'{str(task.end.time())}'
+                text += f'{task.end.strftime("%H:%M:%S")}'
             text += ' | Desc: '
             if task.description != None:
-                text += f'{task.description}'
+                truncDesc = (task.description[:30] + '..') if len(task.description) > 30 else task.description
+                text += f'{truncDesc}'
+            text += ' | Duration: '
+            if task.start != None and task.end != None:
+                delta = task.end - task.start
+                text += str(self.formatTimedelta(delta))
             self.taskList.insert(index, text)
             index += 1
 
     def clearTasks(self):
         self.taskList.delete(0, last=self.taskList.size())
+
+    def formatTimedelta(self, timedelta):
+        return self.chop_microseconds(timedelta)
+
+    def chop_microseconds(self, timedelta):
+        return timedelta - datetime.timedelta(microseconds=timedelta.microseconds)
             
 
     

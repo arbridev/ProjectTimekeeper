@@ -57,7 +57,7 @@ class ExcelHandler():
         sheet['B1'] = 'Start'
         sheet['C1'] = 'End'
         sheet['D1'] = 'Task'
-        sheet['E1'] = 'Interval'
+        sheet['E1'] = 'Duration'
 
     ## helper methods
 
@@ -72,7 +72,7 @@ class ExcelHandler():
                 nextRow = cell.row + 1
         return sheet[column + str(nextRow)]
 
-    def getLastFillCellDown(self, column="A"):
+    def getLastFilledCell(self, column="A"):
         sheet = self.workbook.active
         nextRow = 1
         for cell in sheet[column]:

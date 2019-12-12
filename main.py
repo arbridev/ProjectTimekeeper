@@ -45,6 +45,7 @@ def openProject():
         app.changeProjectTitle(filename)
         handler.openWorkbook(filename)
         app.presentTasks(loadTasks())
+        setUIState()
 
 def startTask():
     if handler.filepath == '':
@@ -65,9 +66,13 @@ def startTask():
     insertDivisoryDate(startCell, previousCell)
     handler.saveWorkbook()
     app.presentTasks(loadTasks())
+    setUIState()
 
 def endTask():
-    cell = handler.getLastFillCellDown()
+    if handler.filepath == '':
+        messagebox.showwarning("Warning","No project selected")
+        return
+    cell = handler.getLastFilledCell()
     cell = handler.getCellBeside(cell)
     cell = handler.getCellBeside(cell)
     cell.value = datetime.datetime.now()
@@ -81,6 +86,7 @@ def endTask():
     handler.adjustRow(cell.row, 20)
     handler.saveWorkbook()
     app.presentTasks(loadTasks())
+    setUIState()
 
 def insertDivisoryDate(cell, previousCell):
     if previousCell.is_date == False:
@@ -92,7 +98,7 @@ def insertDivisoryDate(cell, previousCell):
         lastDateCell = cell.offset(row=-1, column=2)
         newDateCell = cell.offset(column=1)
         lastDate = None
-        if lastDateCell.value is datetime.datetime:
+        if lastDateCell.is_date:
             lastDate = lastDateCell.value.date()
         newDate = newDateCell.value.date()
         if newDate != lastDate:
@@ -107,7 +113,7 @@ def inputDivisoryDate(row):
 
 def loadTasks():
     tasks = []
-    cell = handler.getLastFillCellDown()
+    cell = handler.getLastFilledCell()
     if cell.row < 2:
         return
     while type(cell.value) is int:
@@ -127,10 +133,31 @@ def loadTasks():
         cell = handler.getCellBelow(cell)
     return tasks
 
+def setUIState(disableTasks=False):
+    startBtnDisabled = False
+    endBtnDisabled = False
+    if disableTasks == True:
+        app.setStartTaskBtn(startTask, disabled=True)
+        app.setEndTaskBtn(endTask, disabled=True)
+        return
+    cell = handler.getLastFilledCell()
+    cell = handler.getCellBeside(cell)
+    endDateCell = handler.getCellBeside(cell) # last end date cell
+    if endDateCell.value == None:
+        startBtnDisabled = True
+        endBtnDisabled = False
+    else:
+        startBtnDisabled = False
+        endBtnDisabled = True
+    app.setStartTaskBtn(startTask, disabled=startBtnDisabled)
+    app.setEndTaskBtn(endTask, disabled=endBtnDisabled)
+
 
 ## main execution
 
 app.setCommands(newProject, openProject, startTask, endTask)
+
+setUIState(disableTasks=True)
 
 app.mainloop()
 
