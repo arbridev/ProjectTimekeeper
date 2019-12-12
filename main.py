@@ -54,7 +54,7 @@ def startTask():
     cell = startCell
     previousCell = handler.getCellAbove(cell)
     if type(previousCell.value) is int:
-        cell.value = int(previousCell.value) + 1
+        cell.value = previousCell.value + 1
     else:
         cell.value = 1
     cell = handler.getCellBeside(cell)
@@ -64,14 +64,10 @@ def startTask():
     cell.value = app.taskEntry.get("1.0", tk.END)
     insertDivisoryDate(startCell, previousCell)
     handler.saveWorkbook()
+    app.presentTasks(loadTasks())
 
 def endTask():
     cell = handler.getLastFillCellDown()
-    previousCell = handler.getCellAbove(cell)
-    if type(previousCell.value) is int:
-        cell.value = int(previousCell.value) + 1
-    else:
-        cell.value = 1
     cell = handler.getCellBeside(cell)
     cell = handler.getCellBeside(cell)
     cell.value = datetime.datetime.now()
@@ -84,6 +80,7 @@ def endTask():
     cell.value = f"=C{cellRow}-B{cellRow}"
     handler.adjustRow(cell.row, 20)
     handler.saveWorkbook()
+    app.presentTasks(loadTasks())
 
 def insertDivisoryDate(cell, previousCell):
     if previousCell.is_date == False:
@@ -94,7 +91,9 @@ def insertDivisoryDate(cell, previousCell):
             return
         lastDateCell = cell.offset(row=-1, column=2)
         newDateCell = cell.offset(column=1)
-        lastDate = lastDateCell.value.date()
+        lastDate = None
+        if lastDateCell.value is datetime.datetime:
+            lastDate = lastDateCell.value.date()
         newDate = newDateCell.value.date()
         if newDate != lastDate:
             newRow = cell.row
@@ -115,7 +114,6 @@ def loadTasks():
         cell = handler.getCellAbove(cell)
     cell = handler.getCellBelow(cell)
     while cell.value != None:
-        print(cell.coordinate, cell.value)
         taskCell = cell
         taskId = taskCell.value
         taskCell = handler.getCellBeside(taskCell)

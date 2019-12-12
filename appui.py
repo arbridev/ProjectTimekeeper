@@ -6,7 +6,7 @@ class App(tk.Frame):
     projectTitleFrm = None
     projectLbl = None
     tasksframe = None
-    tasksList = None
+    taskList = None
     buttonPanel = None
     newProjectBtn = None
     openProjectBtn = None
@@ -56,8 +56,8 @@ class App(tk.Frame):
         self.tasksframe = tk.Frame(root, bg="white")
         self.tasksframe.place(relwidth=0.76, relheight=0.7, relx=0.22, rely=0.1)
 
-        self.tasksList = tk.Listbox(self.tasksframe)
-        self.tasksList.pack(expand=True, fill=tk.BOTH)
+        self.taskList = tk.Listbox(self.tasksframe)
+        self.taskList.pack(expand=True, fill=tk.BOTH)
 
         self.buttonPanel = tk.Frame(root, bg="gray")
         self.buttonPanel.place(relwidth=0.2, relheight=1.0, relx=0.0, rely=0.0)
@@ -115,8 +115,24 @@ class App(tk.Frame):
         self.endTaskBtn.pack(fill=tk.X)
 
     def presentTasks(self, tasks):
+        self.clearTasks()
+        index = 1
         for task in tasks:
             print(task)
+            text = f'{task.id} - Start: '
+            if task.start != None:
+                text += f'{str(task.start.time())}'
+            text += ' | End: '
+            if task.end != None:
+                text += f'{str(task.end.time())}'
+            text += ' | Desc: '
+            if task.description != None:
+                text += f'{task.description}'
+            self.taskList.insert(index, text)
+            index += 1
+
+    def clearTasks(self):
+        self.taskList.delete(0, last=self.taskList.size())
             
 
     
