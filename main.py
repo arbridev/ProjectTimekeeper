@@ -25,19 +25,21 @@ from task import Task
 app = App()
 handler = ExcelHandler()
 
-## helper functions
+## methods
 
 def newProject():
     projectTitle = simpledialog.askstring("Input", "Project name:", parent=app.master)
     if projectTitle != '':
-        app.changeProjectTitle(projectTitle)
         path = os.path.join(projectsDir, projectTitle + ".xlsx")
         handler.newWorkbook(path)
+        app.changeProjectTitle(path)
         handler.inputScaffold()
         handler.adjustColumn("B", 20)
         handler.adjustColumn("C", 20)
         handler.adjustColumn("D", 40)
         handler.saveWorkbook()
+        app.presentTasks(loadTasks())
+        setUIState()
 
 def openProject():
     filename = filedialog.askopenfilename(initialdir=os.path.join(appDir, 'projects'), title="Select File", filetypes=(("excel", "*.xlsx"), ("all files", "*.*")))
@@ -115,7 +117,7 @@ def loadTasks():
     tasks = []
     cell = handler.getLastFilledCell()
     if cell.row < 2:
-        return
+        return tasks
     while type(cell.value) is int:
         cell = handler.getCellAbove(cell)
     cell = handler.getCellBelow(cell)
