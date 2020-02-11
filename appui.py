@@ -127,7 +127,6 @@ class App(tk.Frame):
         self.clearTasks()
         index = 1
         for task in tasks:
-            print(task)
             text = f'{task.id} - Start: '
             if task.start != None:
                 text += f'{task.start.strftime("%H:%M:%S")}'

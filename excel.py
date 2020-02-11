@@ -49,7 +49,7 @@ class ExcelHandler():
         sheet[cellCoordinate].value = date
 
     def inputCurrentDate(self, cell):
-        self.inputDate(datetime.datetime.now(), cell)
+        self.inputDate(datetime.datetime.now(), cell.coordinate)
 
     def inputScaffold(self):
         sheet = self.workbook.active

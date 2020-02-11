@@ -29,7 +29,7 @@ handler = ExcelHandler()
 
 def newProject():
     projectTitle = simpledialog.askstring("Input", "Project name:", parent=app.master)
-    if projectTitle != '':
+    if projectTitle != '' and projectTitle != None:
         path = os.path.join(projectsDir, projectTitle + ".xlsx")
         handler.newWorkbook(path)
         app.changeProjectTitle(path)
@@ -67,6 +67,7 @@ def startTask():
     cell.value = app.taskEntry.get("1.0", tk.END)
     insertDivisoryDate(startCell, previousCell)
     handler.saveWorkbook()
+    setPreviousDayTotal()
     app.presentTasks(loadTasks())
     setUIState()
 
@@ -153,6 +154,23 @@ def setUIState(disableTasks=False):
         endBtnDisabled = True
     app.setStartTaskBtn(startTask, disabled=startBtnDisabled)
     app.setEndTaskBtn(endTask, disabled=endBtnDisabled)
+
+def setPreviousDayTotal():
+    lastCell = handler.getLastFilledCell()
+    lastCell = handler.getCellAbove(lastCell)
+    if lastCell.is_date == True:
+        sumCells = []
+        lastCell = handler.getCellAbove(lastCell)
+        while lastCell.is_date == False:
+            sumCells.append(lastCell)
+            lastCell = handler.getCellAbove(lastCell)
+        sumCells.reverse()
+        formulae = '=Sum(' + sumCells[0].offset(column=4).coordinate + ':' + sumCells.pop().offset(column=4).coordinate + ')'
+        totalCell = lastCell.offset(column=5)
+        totalCell.value = datetime.time()
+        totalCell.value = formulae
+        handler.saveWorkbook()
+        
 
 
 ## main execution
