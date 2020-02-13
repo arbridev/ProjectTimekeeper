@@ -164,6 +164,8 @@ def setPreviousDayTotal():
         while lastCell.is_date == False:
             sumCells.append(lastCell)
             lastCell = handler.getCellAbove(lastCell)
+            if lastCell == None:
+                return
         sumCells.reverse()
         formulae = '=Sum(' + sumCells[0].offset(column=4).coordinate + ':' + sumCells.pop().offset(column=4).coordinate + ')'
         totalCell = lastCell.offset(column=5)
