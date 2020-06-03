@@ -9,7 +9,7 @@ import datetime
 ## setup
 
 appDir = os.path.dirname(os.path.realpath(__file__))
-projectsDir = os.path.join(appDir, "projects")
+projectsdir = os.path.join(appDir, "projects")
 
 os.chdir(appDir)
 sys.path.insert(1, os.getcwd())
@@ -28,9 +28,9 @@ handler = ExcelHandler()
 ## methods
 
 def new_project():
-    projectTitle = simpledialog.askstring("Input", "Project name:", parent=app.master)
-    if projectTitle != '' and projectTitle != None:
-        path = os.path.join(projectsDir, projectTitle + ".xlsx")
+    project_title = simpledialog.askstring("Input", "Project name:", parent=app.master)
+    if project_title != '' and project_title != None:
+        path = os.path.join(projectsdir, project_title + ".xlsx")
         handler.new_workbook(path)
         app.change_project_title(path)
         handler.input_scaffold()
@@ -94,20 +94,20 @@ def end_task():
 def insert_divisory_date(cell, previouscell):
     if previouscell.is_date == False:
         if previouscell.value == 'Id':
-            newRow = cell.row
-            handler.insert_row(newRow)
-            input_divisory_date(newRow)
+            newrow = cell.row
+            handler.insert_row(newrow)
+            input_divisory_date(newrow)
             return
         lastdatecell = cell.offset(row=-1, column=2)
         newdatecell = cell.offset(column=1)
-        lastDate = None
+        lastdate = None
         if lastdatecell.is_date:
-            lastDate = lastdatecell.value.date()
+            lastdate = lastdatecell.value.date()
         newdate = newdatecell.value.date()
-        if newdate != lastDate:
-            newRow = cell.row
-            handler.insert_row(newRow)
-            input_divisory_date(newRow)
+        if newdate != lastdate:
+            newrow = cell.row
+            handler.insert_row(newrow)
+            input_divisory_date(newrow)
 
 def input_divisory_date(row):
     merge_range = f'A{str(row)}:E{str(row)}'
@@ -123,15 +123,15 @@ def load_tasks():
         cell = handler.get_cell_above(cell)
     cell = handler.get_cell_below(cell)
     while cell.value != None:
-        taskCell = cell
-        taskId = taskCell.value
-        taskCell = handler.get_cell_beside(taskCell)
-        taskStart = taskCell.value
-        taskCell = handler.get_cell_beside(taskCell)
-        taskEnd = taskCell.value
-        taskCell = handler.get_cell_beside(taskCell)
-        taskDesc = taskCell.value
-        task = Task(taskId, start=taskStart, end=taskEnd, description=taskDesc)
+        taskcell = cell
+        taskId = taskcell.value
+        taskcell = handler.get_cell_beside(taskcell)
+        taskstart = taskcell.value
+        taskcell = handler.get_cell_beside(taskcell)
+        taskend = taskcell.value
+        taskcell = handler.get_cell_beside(taskcell)
+        taskdesc = taskcell.value
+        task = Task(taskId, start=taskstart, end=taskend, description=taskdesc)
         tasks.append(task)
         cell = handler.get_cell_below(cell)
     return tasks

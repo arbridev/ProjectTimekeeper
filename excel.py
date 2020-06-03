@@ -63,25 +63,25 @@ class ExcelHandler():
 
     def get_next_empty_cell_down(self, column="A"):
         sheet = self.workbook.active
-        nextRow = 1
+        nextrow = 1
         for cell in sheet[column]:
             if cell.value is None:
-                nextRow = cell.row
+                nextrow = cell.row
                 break
             else:
-                nextRow = cell.row + 1
-        return sheet[column + str(nextRow)]
+                nextrow = cell.row + 1
+        return sheet[column + str(nextrow)]
 
     def get_last_filled_cell(self, column="A"):
         sheet = self.workbook.active
-        nextRow = 1
+        nextrow = 1
         for cell in sheet[column]:
             if cell.value is None:
-                nextRow = cell.row - 1
+                nextrow = cell.row - 1
                 break
             else:
-                nextRow = cell.row
-        return sheet[column + str(nextRow)]
+                nextrow = cell.row
+        return sheet[column + str(nextrow)]
 
     def get_cell_above(self, cell):
         if cell.row - 1 > 0:
@@ -113,9 +113,9 @@ class ExcelHandler():
     #     if horizontalAlignment != None or verticalAlignment != None:
     #         cell.alignment = Alignment(horizontal=horizontalAlignment, vertical=horizontalAlignment)
 
-    def insert_row(self, atRow):
+    def insert_row(self, at_row):
         sheet = self.workbook.active
-        sheet.insert_rows(atRow)
+        sheet.insert_rows(at_row)
     
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         sheet = self.workbook.active
