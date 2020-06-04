@@ -32,7 +32,7 @@ def new_project():
     if project_title != '' and project_title != None:
         path = os.path.join(projectsdir, project_title + ".xlsx")
         handler.new_workbook(path)
-        app.change_project_title(path)
+        app.change_project_title(os.path.basename(path))
         handler.input_scaffold()
         handler.adjust_column("B", 20)
         handler.adjust_column("C", 20)
@@ -47,7 +47,7 @@ def open_project():
         title="Select File", 
         filetypes=(("excel", "*.xlsx"), ("all files", "*.*")))
     if filename != '':
-        app.change_project_title(filename)
+        app.change_project_title(os.path.basename(filename))
         handler.open_workbook(filename)
         app.present_tasks(load_tasks())
         set_ui_state()

@@ -8,11 +8,11 @@ This app was build with Python using tkinter as GUI.
 
 You can create an executable with _pyinstaller_
 
-`
+```
 pip install pyinstaller
 pyinstaller --onefile --noconsole main.py
 mkdir ./dist/projects
-`
+```
 
 ## License
 
