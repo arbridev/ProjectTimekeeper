@@ -5,7 +5,6 @@ import os
 import string
 import datetime
 from openpyxl.styles import Font, Alignment
-# from openpyxl.styles import Alignment
 
 class ExcelHandler():
 
@@ -51,11 +50,18 @@ class ExcelHandler():
 
     def input_scaffold(self):
         sheet = self.workbook.active
-        sheet['A1'] = 'Id'
-        sheet['B1'] = 'Start'
-        sheet['C1'] = 'End'
-        sheet['D1'] = 'Task'
-        sheet['E1'] = 'Duration'
+        header = [sheet['A1'], sheet['B1'], sheet['C1'], sheet['D1'], sheet['E1']]
+        header[0].value = 'Id'
+        header[1].value = 'Start'
+        header[2].value = 'End'
+        header[3].value = 'Task'
+        header[4].value = 'Duration'
+        self.adjust_column("B", 20)
+        self.adjust_column("C", 20)
+        self.adjust_column("D", 40)
+        self.adjust_column("E", 15)
+        self.adjust_column("F", 20)
+        list(map(lambda c: self.apply_header(c), header))
 
     ## helper methods
 
@@ -77,7 +83,6 @@ class ExcelHandler():
             if cell.row < from_row:
                 continue
             if cell.value is None:
-                # nextrow = cell.row - 1
                 break
             else:
                 nextrow = cell.row
@@ -109,10 +114,6 @@ class ExcelHandler():
         sheet = self.workbook.active
         sheet.row_dimensions[row].height = height
 
-    # def adjustCell(self, cell, horizontalAlignment=None, verticalAlignment=None):
-    #     if horizontalAlignment != None or verticalAlignment != None:
-    #         cell.alignment = Alignment(horizontal=horizontalAlignment, vertical=horizontalAlignment)
-
     def insert_row(self, at_row):
         sheet = self.workbook.active
         sheet.insert_rows(at_row)
@@ -129,8 +130,21 @@ class ExcelHandler():
         sheet = self.workbook.active
         return sheet[cellcoord]
 
-    def apply_bold(self, cell):
-        cell.font = Font(bold=True)
-
     def apply_center(self, cell):
         cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    def apply_font_bold(self, cell):
+        cell.font = Font(bold=True)
+
+    def apply_font_size(self, cell, size):
+        cell.font = Font(size=size)
+
+    def apply_font_color(self, cell, color):
+        cell.font = Font(color=color)
+
+    def apply_header(self, cell):
+        cell.font = Font(name='Calibri', size=14, bold=True, italic=False,vertAlign=None, underline='none', strike=False, color='FF000000')
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    def apply_font_style(self, cell, name='Calibri', size=11, bold=False, italic=False,vertAlign=None, underline='none', strike=False, color='FF000000'):
+        cell.font = Font(name=name, size=size, bold=bold, italic=italic, vertAlign=vertAlign, underline=underline, strike=strike, color=color)

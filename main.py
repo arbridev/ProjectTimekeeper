@@ -34,9 +34,6 @@ def new_project():
         handler.new_workbook(path)
         app.change_project_title(os.path.basename(path))
         handler.input_scaffold()
-        handler.adjust_column("B", 20)
-        handler.adjust_column("C", 20)
-        handler.adjust_column("D", 40)
         handler.save_workbook()
         app.present_tasks(load_tasks())
         set_ui_state()
@@ -84,7 +81,6 @@ def end_task():
     cell.value = datetime.datetime.now()
     cell = handler.get_cell_beside(cell)
     cell.value = app.taskEntry.get("1.0", tk.END)
-    # handler.adjustCell(cell, verticalAlignment="center")
     cell = handler.get_cell_beside(cell)
     cellRow = str(cell.row)
     cell.value = datetime.time()
@@ -171,6 +167,7 @@ def set_day_total():
     totalcell = targetcell.offset(column=5)
     totalcell.value = datetime.time()
     totalcell.value = formulae
+    handler.apply_center(totalcell)
     handler.save_workbook()
 
 def set_project_total():
@@ -181,8 +178,8 @@ def set_project_total():
     totalcell = handler.get_cell('F1')
     totalcell.value = datetime.time()
     totalcell.value = formulae
-    handler.apply_bold(totalcell)
     handler.apply_center(totalcell)
+    handler.apply_font_style(totalcell, bold=True, size=12, color='FF000080')
     handler.save_workbook()
 
 
