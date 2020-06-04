@@ -17,8 +17,10 @@ class App(tk.Frame):
     end_task_btn = None
 
     __lightgray = "#AAAAAA"
-    __bgwhite = "#E9E9E9"
+    __bggray = "#E9E9E9"
     __darkgray = "#333339"
+    __blue = "#000080"
+    __red = "#800000"
 
     def __init__(self, master=None):
         super().__init__(master)
@@ -37,7 +39,7 @@ class App(tk.Frame):
         w_width = s_width/2
         w_height = s_height/2
 
-        canvas = tk.Canvas(root, height=w_height, width=w_width, bg=self.__bgwhite)
+        canvas = tk.Canvas(root, height=w_height, width=w_width, bg=self.__bggray)
         canvas.pack()
 
         # calculate x and y coordinates for the Tk root window
@@ -52,11 +54,11 @@ class App(tk.Frame):
 
         projectTitle = 'NO PROJECT SELECTED'
 
-        self.project_title_frm = tk.Frame(root, bg=self.__bgwhite)
+        self.project_title_frm = tk.Frame(root, bg=self.__bggray)
         self.project_title_frm.place(relwidth=0.8, relheight=0.1, relx=0.2, rely=0.0)
-
-        self.project_lbl = tk.Label(self.project_title_frm, text=projectTitle, fg="black", bg=self.__bgwhite)
-        self.project_lbl.pack()
+        
+        self.project_lbl = tk.Label(self.project_title_frm, text=projectTitle, fg="black", bg=self.__bggray)
+        self.project_lbl.pack(expand=True)
 
         self.tasksframe = tk.Frame(root, bg="white")
         self.tasksframe.place(relwidth=0.76, relheight=0.5, relx=0.22, rely=0.1)
@@ -64,19 +66,19 @@ class App(tk.Frame):
         self.tasklist = tk.Listbox(self.tasksframe)
         self.tasklist.pack(expand=True, fill=tk.BOTH)
 
-        self.button_panel = tk.Frame(root, bg=self.__bgwhite)
+        self.button_panel = tk.Frame(root, bg=self.__bggray)
         self.button_panel.place(relwidth=0.2, relheight=1.0, relx=0.0, rely=0.0)
         
         self.set_new_project_btn(None)
         
         self.set_open_project_btn(None)
 
-        self.task_button_section = tk.Frame(self.button_panel, bg=self.__bgwhite)
+        self.task_button_section = tk.Frame(self.button_panel, bg=self.__bggray)
         self.task_button_section.place(relwidth=1.0, relheight=0.4, relx=0.0, rely=0.6)
         
-        self.taskpanel = tk.Frame(root, bg=self.__bgwhite, padx=10, pady=5)
+        self.taskpanel = tk.Frame(root, bg=self.__bggray, padx=10, pady=5)
         self.taskpanel.place(relwidth=0.8, relheight=0.35, relx=0.2, rely=0.6)
-        tk.Label(self.taskpanel, text="TASK DESCRIPTION:", bg=self.__bgwhite).pack()
+        tk.Label(self.taskpanel, text="TASK DESCRIPTION:", bg=self.__bggray).pack()
         self.taskEntry = tk.Text(self.taskpanel)
         self.taskEntry.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.BOTH)
         
@@ -86,8 +88,8 @@ class App(tk.Frame):
     
     def change_project_title(self, title):
         self.project_lbl.destroy()
-        self.project_lbl = tk.Label(self.project_title_frm, text=title, fg="black", bg=self.__bgwhite)
-        self.project_lbl.pack()
+        self.project_lbl = tk.Label(self.project_title_frm, text=title, fg="black", bg=self.__bggray)
+        self.project_lbl.pack(expand=True)
 
     def set_commands(self, newproject, openproject, starttask, endtask):
         self.set_new_project_btn(newproject)
@@ -108,21 +110,25 @@ class App(tk.Frame):
         self.open_project_btn.place(relwidth=0.8, relheight=0.1, relx=0.1, rely=0.15)
 
     def set_start_task_btn(self, starttask, disabled=False):
+        color = self.__blue
         if starttask != None:
             self.start_task_btn.destroy()
         state = tk.NORMAL
         if disabled == True:
             state = tk.DISABLED
-        self.start_task_btn = tk.Button(self.task_button_section, text="Start", padx=10, pady=5, fg="white", bg=self.__darkgray, command=starttask, state=state)
+            color = self.__darkgray
+        self.start_task_btn = tk.Button(self.task_button_section, text="Start", padx=10, pady=5, fg="white", bg=color, command=starttask, state=state)
         self.start_task_btn.place(relwidth=0.8, relheight=0.3, relx=0.1, rely=0.2)
 
     def set_end_task_btn(self, endtask, disabled=False):
+        color = self.__red
         if endtask != None:
             self.end_task_btn.destroy()
         state = tk.NORMAL
         if disabled == True:
             state = tk.DISABLED
-        self.end_task_btn = tk.Button(self.task_button_section, text="End", padx=10, pady=5, fg="white", bg=self.__darkgray, command=endtask, state=state)
+            color = self.__darkgray
+        self.end_task_btn = tk.Button(self.task_button_section, text="End", padx=10, pady=5, fg="white", bg=color, command=endtask, state=state)
         self.end_task_btn.place(relwidth=0.8, relheight=0.3, relx=0.1, rely=0.5)
 
     def present_tasks(self, tasks):
