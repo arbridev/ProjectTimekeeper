@@ -4,6 +4,7 @@ import openpyxl
 import os
 import string
 import datetime
+from openpyxl.styles import Font, Alignment
 # from openpyxl.styles import Alignment
 
 class ExcelHandler():
@@ -12,9 +13,6 @@ class ExcelHandler():
     filepath = ''
 
     __alphabet = string.ascii_uppercase
-
-    # def __init__(self):
-    #     print('init excel handler')
 
     ## file methods
 
@@ -72,12 +70,14 @@ class ExcelHandler():
                 nextrow = cell.row + 1
         return sheet[column + str(nextrow)]
 
-    def get_last_filled_cell(self, column="A"):
+    def get_last_filled_cell_vertically(self, column="A", from_row=1):
         sheet = self.workbook.active
         nextrow = 1
         for cell in sheet[column]:
+            if cell.row < from_row:
+                continue
             if cell.value is None:
-                nextrow = cell.row - 1
+                # nextrow = cell.row - 1
                 break
             else:
                 nextrow = cell.row
@@ -120,4 +120,17 @@ class ExcelHandler():
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         sheet = self.workbook.active
         sheet.merge_cells(range_string=range_string, start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
-        
+
+    def get_column(self, columncoord):
+        sheet = self.workbook.active
+        return sheet[columncoord]
+
+    def get_cell(self, cellcoord):
+        sheet = self.workbook.active
+        return sheet[cellcoord]
+
+    def apply_bold(self, cell):
+        cell.font = Font(bold=True)
+
+    def apply_center(self, cell):
+        cell.alignment = Alignment(horizontal="center", vertical="center")
